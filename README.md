@@ -1,3 +1,5 @@
+## This repository stores the next version of PhantomJS. Do not use this version of Phantomjs!
+
 # [PhantomJS](http://phantomjs.org) - Scriptable Headless WebKit
 
 PhantomJS ([www.phantomjs.org](http://phantomjs.org)) is a headless WebKit scriptable with JavaScript or CoffeeScript. It is used by hundreds of [developers](https://github.com/ariya/phantomjs/wiki/Buzz) and dozens of [organizations](https://github.com/ariya/phantomjs/wiki/Users) for web-related development workflow.
