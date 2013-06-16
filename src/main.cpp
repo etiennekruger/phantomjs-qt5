@@ -59,7 +59,7 @@ Q_IMPORT_PLUGIN(qico)
 #endif
 #endif
 
-#if QT_VERSION != QT_VERSION_CHECK(4, 8, 4)
+#if QT_VERSION != QT_VERSION_CHECK(5, 2, 0)
 #error Something is wrong with the setup. Please report to the mailing list!
 #endif
 
@@ -104,7 +104,7 @@ int main(int argc, char** argv, const char** envp)
     Env::instance()->parse(envp);
 
     // Registering an alternative Message Handler
-    qInstallMsgHandler(Utils::messageHandler);
+    qInstallMessageHandler(Utils::messageHandler);
 
 #if defined(Q_OS_LINUX)
     if (QSslSocket::supportsSsl()) {

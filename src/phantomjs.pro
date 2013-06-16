@@ -1,14 +1,12 @@
 TEMPLATE = app
 TARGET = phantomjs
-QT += network webkit
+QT += network webkitwidgets
 CONFIG += console
 
 DESTDIR = ../bin
 
 RESOURCES = phantomjs.qrc \
-    ghostdriver/ghostdriver.qrc \
-    qt/src/3rdparty/webkit/Source/WebCore/inspector/front-end/WebKit.qrc \
-    qt/src/3rdparty/webkit/Source/WebCore/generated/InspectorBackendStub.qrc
+    ghostdriver/ghostdriver.qrc
 
 HEADERS += csconverter.h \
     phantom.h \

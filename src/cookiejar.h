@@ -32,6 +32,7 @@
 #define COOKIEJAR_H
 
 #include <QSettings>
+#include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QVariantList>
 #include <QVariantMap>

@@ -34,8 +34,8 @@
 
 #include <QDir>
 #include <QFileInfo>
-#include <QWebPage>
-#include <QWebFrame>
+#include <QtWebKitWidgets/QWebPage>
+#include <QtWebKitWidgets/QWebFrame>
 #include <QNetworkProxy>
 
 #include "terminal.h"
