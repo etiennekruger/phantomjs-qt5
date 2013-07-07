@@ -1,3 +1,6 @@
 [submodule "qt"]
 	path = src\\qt
 	url = https://github.com/Vitallium/qt5
+[submodule "src\\webkit"]
+	path = src\\webkit
+	url = https://github.com/Vitallium/webkit/
