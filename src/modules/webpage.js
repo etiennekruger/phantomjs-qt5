@@ -36,19 +36,19 @@
 
 function checkType(o, type) {
     return typeof o === type;
-}
+};
 
 function isObject(o) {
     return checkType(o, 'object');
-}
+};
 
 function isUndefined(o) {
     return checkType(o, 'undefined');
-}
+};
 
 function isUndefinedOrNull(o) {
     return isUndefined(o) || null === o;
-}
+};
 
 function copyInto(target, source) {
     if (target === source || isUndefinedOrNull(source)) {
@@ -87,78 +87,82 @@ function copyInto(target, source) {
     }
 
     return target;
-}
+};
 
 function definePageSignalHandler(page, handlers, handlerName, signalName) {
-    page.__defineSetter__(handlerName, function (f) {
-        // Disconnect previous handler (if any)
-        if (!!handlers[handlerName] && typeof handlers[handlerName].callback === "function") {
-            try {
-                this[signalName].disconnect(handlers[handlerName].callback);
-            } catch (e) {}
-        }
-
-        // Delete the previous handler
-        delete handlers[handlerName];
-
-        // Connect the new handler iff it's a function
-        if (typeof f === "function") {
-            // Store the new handler for reference
-            handlers[handlerName] = {
-                callback: f
+    Object.defineProperty(page, handlerName, {
+        set: function (f) {
+            // Disconnect previous handler (if any)
+            if (!!handlers[handlerName] && typeof handlers[handlerName].callback === "function") {
+                try {
+                    this[signalName].disconnect(handlers[handlerName].callback);
+                } catch (e) { }
             }
-            this[signalName].connect(f);
+
+            // Delete the previous handler
+            delete handlers[handlerName];
+
+            // Connect the new handler iff it's a function
+            if (typeof f === "function") {
+                // Store the new handler for reference
+                handlers[handlerName] = {
+                    callback: f
+                };
+                this[signalName].connect(f);
+            }
+        },
+
+        get: function () {
+            return !!handlers[handlerName] && typeof handlers[handlerName].callback === "function" ?
+                handlers[handlerName].callback :
+                undefined;
         }
     });
-    
-    page.__defineGetter__(handlerName, function() {
-        return !!handlers[handlerName] && typeof handlers[handlerName].callback === "function" ?
-            handlers[handlerName].callback :
-            undefined;
-    });
-}
+};
 
 function definePageCallbackHandler(page, handlers, handlerName, callbackConstructor) {
-    page.__defineSetter__(handlerName, function(f) {
-        // Fetch the right callback object
-        var callbackObj = page[callbackConstructor]();
+    Object.defineProperty(page, handlerName, {
+        set: function(f) {
+            // Fetch the right callback object
+            var callbackObj = page[callbackConstructor]();
 
-        // Disconnect previous handler (if any)
-        var handlerObj = handlers[handlerName];
-        if (!!handlerObj && typeof handlerObj.callback === "function" && typeof handlerObj.connector === "function") {
-            try {
-                callbackObj.called.disconnect(handlerObj.connector);
-            } catch (e) {
-                console.log(e);
+            // Disconnect previous handler (if any)
+            var handlerObj = handlers[handlerName];
+            if (!!handlerObj && typeof handlerObj.callback === "function" && typeof handlerObj.connector === "function") {
+                try {
+                    callbackObj.called.disconnect(handlerObj.connector);
+                } catch (e) {
+                    console.log(e);
+                }
             }
-        }
 
-        // Delete the previous handler
-        delete handlers[handlerName];
+            // Delete the previous handler
+            delete handlers[handlerName];
 
-        // Connect the new handler iff it's a function
-        if (typeof f === "function") {
-            var connector = function() {
-                // Callback will receive a "deserialized", normal "arguments" array
-                callbackObj.returnValue = f.apply(this, arguments[0]);
-            };
+            // Connect the new handler iff it's a function
+            if (typeof f === "function") {
+                var connector = function() {
+                    // Callback will receive a "deserialized", normal "arguments" array
+                    callbackObj.returnValue = f.apply(this, arguments[0]);
+                };
             
-            // Store the new handler for reference
-            handlers[handlerName] = {
-                callback: f,
-                connector: connector
-            };
+                // Store the new handler for reference
+                handlers[handlerName] = {
+                    callback: f,
+                    connector: connector
+                };
 
-            // Connect a new handler
-            callbackObj.called.connect(connector);
+                // Connect a new handler
+                callbackObj.called.connect(connector);
+            }
+        },
+
+        get: function() {
+            var handlerObj = handlers[handlerName];
+            return (!!handlerObj && typeof handlerObj.callback === "function" && typeof handlerObj.connector === "function") ?
+                handlers[handlerName].callback :
+                undefined;
         }
-    });
-    
-    page.__defineGetter__(handlerName, function() {
-        var handlerObj = handlers[handlerName];
-        return (!!handlerObj && typeof handlerObj.callback === "function" && typeof handlerObj.connector === "function") ?
-            handlers[handlerName].callback :
-            undefined;
     });
 }
 
@@ -276,10 +280,10 @@ function decorateNewPage(opts, page) {
             this.openUrl(url, 'get', this.settings);
             return;
         } else if (arguments.length === 2 && typeof arg1 === 'function') {
-            this._onPageOpenFinished = function() {
+            this._onPageOpenFinished = function () {
                 thisPage._onPageOpenFinished = null; //< Disconnect callback (should fire only once)
                 arg1.apply(thisPage, arguments);     //< Invoke the actual callback
-            }
+            };
             this.openUrl(url, 'get', this.settings);
             return;
         } else if (arguments.length === 2) {
@@ -289,7 +293,7 @@ function decorateNewPage(opts, page) {
             this._onPageOpenFinished = function() {
                 thisPage._onPageOpenFinished = null; //< Disconnect callback (should fire only once)
                 arg2.apply(thisPage, arguments);     //< Invoke the actual callback
-            }
+            };
             this.openUrl(url, arg1, this.settings);
             return;
         } else if (arguments.length === 3) {
@@ -302,7 +306,7 @@ function decorateNewPage(opts, page) {
             this._onPageOpenFinished = function() {
                 thisPage._onPageOpenFinished = null; //< Disconnect callback (should fire only once)
                 arg3.apply(thisPage, arguments);     //< Invoke the actual callback
-            }
+            };
             this.openUrl(url, {
                 operation: arg1,
                 data: arg2
@@ -312,7 +316,7 @@ function decorateNewPage(opts, page) {
             this._onPageOpenFinished = function() {
                 thisPage._onPageOpenFinished = null; //< Disconnect callback (should fire only once)
                 arg4.apply(thisPage, arguments);     //< Invoke the actual callback
-            }
+            };
             this.openUrl(url, {
                 operation: arg1,
                 data: arg2,
@@ -367,7 +371,7 @@ function decorateNewPage(opts, page) {
             case "object":      //< for type "object"
             case "array":       //< for type "array"
             case "date":        //< for type "date"
-                str += "JSON.parse(" + JSON.stringify(JSON.stringify(arg)) + "),"
+                str += "JSON.parse(" + JSON.stringify(JSON.stringify(arg)) + "),";
                 break;
             case "string":      //< for type "string"
                 str += quoteString(arg) + ',';
