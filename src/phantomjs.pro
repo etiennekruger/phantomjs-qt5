@@ -65,12 +65,6 @@ linux*|mac {
       breakpad/src/common/convert_UTF.c \
       breakpad/src/common/md5.cc \
       breakpad/src/common/string_conversion.cc 
-
-    QTPLUGIN += \
-        qcncodecs \
-        qjpcodecs \
-        qkrcodecs \
-        qtwcodecs
 }
 
 linux* {
@@ -122,10 +116,6 @@ win32-msvc* {
     CONFIG(static) {
         DEFINES += STATIC_BUILD
         QTPLUGIN += \
-            qcncodecs \
-            qjpcodecs \
-            qkrcodecs \
-            qtwcodecs \
             qico
     }
 }
