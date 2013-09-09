@@ -1,3 +1,6 @@
 [submodule "src/webkit"]
 	path = src/webkit
 	url = https://github.com/Vitallium/webkit
+[submodule "src/qt"]
+	path = src/qt
+	url = git://gitorious.org/qt/qt5.git

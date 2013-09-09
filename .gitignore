@@ -55,6 +55,3 @@ tools/dump_syms.app/
 [Dd]ebug*/
 [Rr]elease/
 bin/
-
-#QT5
-src/qt/

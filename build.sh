@@ -89,12 +89,5 @@ EOF
     echo
 fi
 
-#cd src/qt && ./preconfig.sh --jobs $COMPILE_JOBS --qt-config "$QT_CFG" && cd ../..
-echo 'preconfig.sh'
-echo $COMPILE_JOBS
-echo $QT_CFG
-#src/qt/bin/qmake $QMAKE_ARGS
-echo 'qmake'
-echo $QMAKE_ARGS
-#make -j$COMPILE_JOBS
-echo "make -j$COMPILE_JOBS"
+cd src/qt && ./configure -prefix $PWD/qtbase -opensource -confirm-license -no-gui && make -j$COMPILE_JOBS && cd ../..
+make -j$COMPILE_JOBS
