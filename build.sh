@@ -89,5 +89,5 @@ EOF
     echo
 fi
 
-cd src/qt && ./configure -prefix $PWD/qtbase -opensource -confirm-license -no-gui && make -j$COMPILE_JOBS && cd ../..
+cd src/qt && ./configure -prefix $PWD/qtbase -opensource -confirm-license && make -j$COMPILE_JOBS && cd ../..
 make -j$COMPILE_JOBS
