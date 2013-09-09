@@ -44,7 +44,7 @@ bool Utils::printDebugMessages = false;
 
 void Utils::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    Q_UNUSED(context):
+    Q_UNUSED(context);
     QDateTime now = QDateTime::currentDateTime();
 
     switch (type) {
@@ -120,7 +120,7 @@ bool Utils::injectJsInFrame(const QString &jsFilePath, const Encoding &jsFileEnc
         return false;
     }
     // Execute JS code in the context of the document
-    targetFrame->evaluateJavaScript(scriptBody, jsFilePath);
+    targetFrame->evaluateJavaScript(scriptBody);
     return true;
 }
 
@@ -139,7 +139,7 @@ bool Utils::loadJSForDebug(const QString& jsFilePath, const Encoding& jsFileEnc,
     targetFrame->setHtml(remoteDebuggerHarnessSrc);
 
     if (autorun) {
-        targetFrame->evaluateJavaScript("__run()", QString());
+        targetFrame->evaluateJavaScript("__run()");
     }
 
     return true;

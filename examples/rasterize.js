@@ -13,7 +13,7 @@ if (system.args.length < 3 || system.args.length > 5) {
     if (system.args.length > 3 && system.args[2].substr(-4) === ".pdf") {
         size = system.args[3].split('*');
         page.paperSize = size.length === 2 ? { width: size[0], height: size[1], margin: '0px' }
-                                           : { format: system.args[3], orientation: 'portrait', margin: '1cm' };
+        : { format: system.args[3], orientation: 'portrait', margin: '0cm', dpi: '360' };
     }
     if (system.args.length > 4) {
         page.zoomFactor = system.args[4];
@@ -26,7 +26,7 @@ if (system.args.length < 3 || system.args.length > 5) {
             window.setTimeout(function () {
                 page.render(output);
                 phantom.exit();
-            }, 200);
+            }, 5000);
         }
     });
 }

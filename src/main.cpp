@@ -60,7 +60,7 @@ Q_IMPORT_PLUGIN(qico)
 #endif
 
 #if QT_VERSION != QT_VERSION_CHECK(5, 2, 0)
-#error Something is wrong with the setup. Please report to the mailing list!
+//#error Something is wrong with the setup. Please report to the mailing list!
 #endif
 
 int main(int argc, char** argv, const char** envp)

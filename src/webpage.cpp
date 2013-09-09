@@ -570,7 +570,7 @@ void WebPage::applySettings(const QVariantMap &def)
     opt->setAttribute(QWebSettings::JavascriptEnabled, def[PAGE_SETTINGS_JS_ENABLED].toBool());
     opt->setAttribute(QWebSettings::XSSAuditingEnabled, def[PAGE_SETTINGS_XSS_AUDITING].toBool());
     opt->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, def[PAGE_SETTINGS_LOCAL_ACCESS_REMOTE].toBool());
-    opt->setAttribute(QWebSettings::WebSecurityEnabled, def[PAGE_SETTINGS_WEB_SECURITY_ENABLED].toBool());
+    //opt->setAttribute(QWebSettings::WebSecurityEnabled, def[PAGE_SETTINGS_WEB_SECURITY_ENABLED].toBool());
     opt->setAttribute(QWebSettings::JavascriptCanOpenWindows, def[PAGE_SETTINGS_JS_CAN_OPEN_WINDOWS].toBool());
     opt->setAttribute(QWebSettings::JavascriptCanCloseWindows, def[PAGE_SETTINGS_JS_CAN_CLOSE_WINDOWS].toBool());
 
@@ -679,8 +679,8 @@ QVariant WebPage::evaluateJavaScript(const QString &code)
     qDebug() << "WebPage - evaluateJavaScript" << function;
 
     evalResult = m_currentFrame->evaluateJavaScript(
-                function,                                   //< function evaluated
-                QString("phantomjs://webpage.evaluate()")); //< reference source file
+                function                                   //< function evaluated
+						    );
 
     qDebug() << "WebPage - evaluateJavaScript result" << evalResult;
 
@@ -821,7 +821,7 @@ void WebPage::openUrl(const QString &address, const QVariant &op, const QVariant
         networkOp = QNetworkAccessManager::DeleteOperation;
 
     if (networkOp == QNetworkAccessManager::UnknownOperation) {
-        m_mainFrame->evaluateJavaScript("console.error('Unknown network operation: " + operation + "');", QString());
+        m_mainFrame->evaluateJavaScript("console.error('Unknown network operation: " + operation + "');");
         return;
     }
 
@@ -1028,7 +1028,7 @@ QImage WebPage::renderImage()
     return buffer;
 }
 
-#define PHANTOMJS_PDF_DPI 72            // Different defaults. OSX: 72, X11: 75(?), Windows: 96
+#define PHANTOMJS_PDF_DPI 1200            // Different defaults. OSX: 72, X11: 75(?), Windows: 96
 
 qreal stringToPointSize(const QString &string)
 {
@@ -1064,7 +1064,7 @@ qreal printMargin(const QVariantMap &map, const QString &key)
 
 bool WebPage::renderPdf(const QString &fileName)
 {
-    QPrinter printer;
+    QPrinter printer(QPrinter::HighResolution);
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setOutputFileName(fileName);
     printer.setResolution(PHANTOMJS_PDF_DPI);
@@ -1075,6 +1075,11 @@ bool WebPage::renderPdf(const QString &fileName)
         paperSize.insert("width", QString::number(pageSize.width()) + "px");
         paperSize.insert("height", QString::number(pageSize.height()) + "px");
         paperSize.insert("margin", "0px");
+	paperSize.insert("dpi", "72");
+    }
+
+    if (paperSize.contains("dpi")) {
+	printer.setResolution(paperSize.value("dpi").toInt());
     }
 
     if (paperSize.contains("width") && paperSize.contains("height")) {
@@ -1219,7 +1224,7 @@ QString getHeaderFooter(const QVariantMap &map, const QString &key, QWebFrame *f
             }
         }
     }
-    frame->evaluateJavaScript("console.error('Bad header callback given, use phantom.callback);", QString());
+    frame->evaluateJavaScript("console.error('Bad header callback given, use phantom.callback);");
     return QString();
 }
 
@@ -1255,7 +1260,7 @@ bool WebPage::injectJs(const QString &jsFilePath) {
 }
 
 void WebPage::_appendScriptElement(const QString &scriptUrl) {
-    m_currentFrame->evaluateJavaScript(QString(JS_APPEND_SCRIPT_ELEMENT).arg(scriptUrl), scriptUrl);
+    m_currentFrame->evaluateJavaScript(QString(JS_APPEND_SCRIPT_ELEMENT).arg(scriptUrl));
 }
 
 QObject *WebPage::_getGenericCallback() {
